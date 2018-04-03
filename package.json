@@ -1,0 +1,17 @@
+{
+  "name": "postcss-auto-imgmq",
+  "version": "1.0.0",
+  "description": "Automatically insert media query for image",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "H5"
+  ],
+  "author": "wujiang",
+  "license": "ISC",
+  "dependencies": {
+    "postcss": "^6.0.21"
+  }
+}
