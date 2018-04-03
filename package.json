@@ -7,10 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "H5"
+    "postcss",
+    "media",
+    "image"
   ],
   "author": "wujiang",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acurseJ/postcss-auto-imgmq"
+  },
   "dependencies": {
     "postcss": "^6.0.21"
   }
