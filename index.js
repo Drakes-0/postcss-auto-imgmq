@@ -14,13 +14,21 @@ const getFilePath = resource =>
         : null
 
 const getImgPath = (filePath, imgPath) => {
+
     if (imgPath.startsWith(`"`) || imgPath.startsWith(`'`))
         imgPath = imgPath.substr(1, imgPath.length - 2)
+
+    let queryString = ''
+
+    if (imgPath.indexOf('?') > 0) {
+        queryString = imgPath.substring(imgPath.indexOf('?'))
+        imgPath = imgPath.replace(queryString, '')
+    }
 
     let relativePath = imgPath
     let absolutePath = path.join(filePath, `${imgPath.startsWith(`./`) ? '.' : '../'}${imgPath}`)
 
-    return { relativePath, absolutePath }
+    return { relativePath, absolutePath, queryString }
 }
 
 const getPostfixPath = (dirname, filename, detectPostfix, extname) =>
@@ -81,7 +89,7 @@ module.exports = postcss.plugin(package.name, opts => {
                     let match = bgImgReg.exec(decl.value)
 
                     if (Array.isArray(match) && match.length > 1) {
-                        let { relativePath, absolutePath } = getImgPath(filePath, match[1])
+                        let { relativePath, absolutePath, queryString } = getImgPath(filePath, match[1])
 
                         if (exists(absolutePath)) {
                             let highDefinition = getExistsPath(getTargetPath(absolutePath, config), config, relativePath)
@@ -90,7 +98,7 @@ module.exports = postcss.plugin(package.name, opts => {
                                     selector: rule.selector,
                                     selectors: rule.selectors,
                                     raws: rule.raws,
-                                    highDefinition,
+                                    highDefinition: `${highDefinition}${queryString}`,
                                     declRaws: decl.raws
                                 }
                             )
