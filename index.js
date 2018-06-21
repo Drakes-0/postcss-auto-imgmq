@@ -40,7 +40,7 @@ const getDirPath = (dirname, detectDirname, filename, extname) =>
 const getTargetPath = (imgPath, config, type) => {
     let extname = path.extname(imgPath)
     let dirname = path.dirname(imgPath)
-    let filename = path.basename(imgPath, extname)
+    let filename = path.basename(imgPath, extname).replace(/@[1-9]{1}x$/i, '')
 
     switch (type) {
         case HDFILE_POSTFIX:
@@ -76,9 +76,11 @@ module.exports = postcss.plugin(package.name, opts => {
 
     return (root, result) => {
 
+        if (!config.detectPostfix && !config.detectDirname) return root
+
         let filePath = getFilePath(root)
-        if (!filePath || (!config.detectPostfix && !config.detectDirname))
-            return root
+
+        if (!filePath || /node_modules/.test(filePath)) return root
 
         let resultArray = []
 
@@ -88,7 +90,7 @@ module.exports = postcss.plugin(package.name, opts => {
                 try {
                     let match = bgImgReg.exec(decl.value)
 
-                    if (Array.isArray(match) && match.length > 1) {
+                    if (Array.isArray(match) && match.length > 1 && match[1].indexOf('data:') < 0) {
                         let { relativePath, absolutePath, queryString } = getImgPath(filePath, match[1])
 
                         if (exists(absolutePath)) {
